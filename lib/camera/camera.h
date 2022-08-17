@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include <esp_camera.h>
-#include <queueImage.h>
+#include <queue.h>
 
 #define PWDN_GPIO_NUM     32
 #define RESET_GPIO_NUM    -1
@@ -28,10 +28,12 @@ class Camera {
         camera_fb_t* fb;
         size_t _jpg_buf_len;
         uint8_t* _jpg_buf;
+        Queue<uint8_t*>* queueImage;
+        int count;
 
     public:
         void init();
-        esp_err_t getImage(QueueImage<uint8_t*>* q);
+        esp_err_t getImage();
         void restore();
         size_t getJPGBufLen();
         uint8_t* getJPGBuf();

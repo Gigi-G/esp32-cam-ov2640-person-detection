@@ -1,7 +1,7 @@
 #include <camera.h>
 
 void Camera::init() {
-    Serial.printf("\nInit camera...");
+    Serial.printf("Init camera...");
     camera_config_t config;
     config.ledc_channel = LEDC_CHANNEL_0;
     config.ledc_timer = LEDC_TIMER_0;
@@ -41,18 +41,13 @@ void Camera::init() {
         exit(-1);
     }
 
-    sensor_t * s = esp_camera_sensor_get();
-    //s->set_framesize(s, FRAMESIZE_96X96);
-    //s->set_gain_ctrl(s, 1);
-    //s->set_exposure_ctrl(s, 1);
-    //s->set_awb_gain(s, 1);                        
-    //s->set_special_effect(s, 2);
-    //s->set_pixformat(s, PIXFORMAT_GRAYSCALE);
+    count = 0;
+    queueImage = Queue<uint8_t*>::getInstance();
 
     Serial.printf("OK\n");
 }
 
-esp_err_t Camera::getImage(QueueImage<uint8_t*>* q) {
+esp_err_t Camera::getImage() {
     esp_err_t res = ESP_OK;
     _jpg_buf_len = 0;
     _jpg_buf = NULL;
@@ -63,9 +58,12 @@ esp_err_t Camera::getImage(QueueImage<uint8_t*>* q) {
         res = ESP_FAIL;
     }
     else if(fb->width > 32) {
-        uint8_t* frame = new uint8_t[fb->len];
-        memcpy(frame, fb->buf, fb->len);
-        q->push(frame);
+        if(++count % 20000000 >= 0) {
+            uint8_t* frame = new uint8_t[fb->len];
+            memcpy(frame, fb->buf, fb->len);
+            queueImage->push(frame);
+            count = 0;
+        }
         if(fb->format != PIXFORMAT_JPEG){
             bool jpeg_converted = frame2jpg(fb, 80, &_jpg_buf, &_jpg_buf_len);
             esp_camera_fb_return(fb);

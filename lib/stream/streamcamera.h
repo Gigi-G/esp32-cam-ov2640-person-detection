@@ -13,16 +13,12 @@ static const char* _STREAM_PART = "Content-Type: image/jpeg\r\nContent-Length: %
 class StreamCamera {
     private:
         static Camera* camera;
-        static PersonDetection* detector;
-        static QueueImage<uint8_t*>* queueImage;
         httpd_handle_t stream_httpd;
 
     public:
         StreamCamera();
         void startCameraServer();
-        Camera* getCamera();
         static esp_err_t stream_handler(httpd_req_t *req);
-        static void run(void* parameter);
 };
 
 #endif
