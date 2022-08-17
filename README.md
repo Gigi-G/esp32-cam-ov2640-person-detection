@@ -2,6 +2,15 @@
 
 
 
-## Info
+## About
 
-This project is still **under construction**. Right now it's a demo, but a good code refactoring is needed and there are some race condition issues to fix.
+This project is a variation of the basic example of [tensorflow lite](https://github.com/tensorflow/tflite-micro/tree/main/tensorflow/lite/micro/examples/person_detection).
+
+
+
+## Examples
+
+![001](./assets/001.jpg)
+
+![002](./assets/002.jpg)
+
